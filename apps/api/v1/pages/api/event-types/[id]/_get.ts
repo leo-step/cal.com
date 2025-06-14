@@ -58,6 +58,9 @@ export async function getHandler(req: NextApiRequest) {
       children: { select: { id: true, userId: true } },
     },
   });
+  if (!eventType) {
+    throw new HttpError({ statusCode: 404, message: "EventType not found" });
+  }
   await checkPermissions(req, eventType);
 
   const link = eventType ? getCalLink(eventType) : null;
@@ -74,8 +77,6 @@ export async function getHandler(req: NextApiRequest) {
     eventType.scheduleId = user.defaultScheduleId;
   }
 
-  // TODO: eventType when not found should be a 404
-  //       but API consumers may depend on the {} behaviour.
   return { event_type: schemaEventTypeReadPublic.parse({ ...eventType, link }) };
 }
 
