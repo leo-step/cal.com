@@ -64,8 +64,7 @@ const SetupAvailability = (props: ISetupAvailabilityProps) => {
           }
         } catch (error) {
           if (error instanceof Error) {
-            // setError(error);
-            // @TODO: log error
+            console.error(error);
           }
         }
       }}>
