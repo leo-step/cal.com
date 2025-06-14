@@ -58,9 +58,12 @@ export async function getHandler(req: NextApiRequest) {
       children: { select: { id: true, userId: true } },
     },
   });
+  if (!eventType) {
+    throw new HttpError({ statusCode: 404, message: "EventType was not found" });
+  }
   await checkPermissions(req, eventType);
 
-  const link = eventType ? getCalLink(eventType) : null;
+  const link = getCalLink(eventType);
   // user.defaultScheduleId doesn't work the same for team events.
   if (!eventType?.scheduleId && eventType?.userId && !eventType?.teamId) {
     const user = await prisma.user.findUniqueOrThrow({
